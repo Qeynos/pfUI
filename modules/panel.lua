@@ -213,21 +213,31 @@ pfUI:RegisterModule("panel", "vanilla:tbc", function()
             end
           end
           oldexp = curexp
-
-          local a=UnitXP("player")
-          local b=UnitXPMax("player")
+    
+          local a = UnitXP("player")
+          local b = UnitXPMax("player")
           local xprested = tonumber(GetXPExhaustion())
-          if remstring == nil then remstring = "" end
-          if xprested ~= nil then
-            pfUI.panel:OutputPanel("exp", T["Exp"] .. ": |cffaaaaff"..floor((a/b)*100).."%"..remstring)
+          
+          -- 计算已休息的经验百分比
+          local restedPercentage = xprested and (xprested / b) * 100 or 0
+          
+          -- 构建经验信息字符串，包括已休息经验
+          local expString = T["Exp"] .. ": "
+          if xprested then
+            expString = expString .. "|cffaaaaff" .. floor((a / b) * 100) .. "%" .. "|r + |cff55ff55" .. floor(restedPercentage) .. "%|r"
           else
-            pfUI.panel:OutputPanel("exp", T["Exp"] .. ": " .. floor((a/b)*100) .. "%" .. remstring)
+            expString = expString .. "|cffaaaaff" .. floor((a / b) * 100) .. "%" .. "|r"
           end
+          if remstring == nil then remstring = "" end
+          
+          -- 输出经验信息到面板
+          pfUI.panel:OutputPanel("exp", expString .. remstring)
         else
           pfUI.panel:OutputPanel("exp", T["Exp"] .. ": " .. NOT_APPLICABLE)
         end
       end)
     end
+    
 
     do -- Bagspace
       local widget = CreateFrame("Frame", "pfPanelWidgetBag", UIParent)
