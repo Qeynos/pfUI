@@ -199,6 +199,7 @@ pfUI:RegisterModule("panel", "vanilla:tbc", function()
       local curexp, difexp, maxexp, remexp, oldexp, remstring
       widget:RegisterEvent("PLAYER_ENTERING_WORLD")
       widget:RegisterEvent("PLAYER_XP_UPDATE")
+      widget:RegisterEvent("UPDATE_EXHAUSTION")
       widget:SetScript("OnEvent", function()
         if UnitLevel("player") < _G.MAX_PLAYER_LEVEL then
           curexp = UnitXP("player")
@@ -237,7 +238,6 @@ pfUI:RegisterModule("panel", "vanilla:tbc", function()
         end
       end)
     end
-    
 
     do -- Bagspace
       local widget = CreateFrame("Frame", "pfPanelWidgetBag", UIParent)
