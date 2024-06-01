@@ -8,7 +8,7 @@ pfUI:RegisterModule("energytick", "vanilla:tbc", function ()
   energytick:RegisterEvent("UNIT_ENERGY")
   energytick:RegisterEvent("UNIT_MANA")
   energytick:SetScript("OnEvent", function()
-    if UnitPowerType("player") == 0 and C.unitframes.player.manatick == "1" then
+    if UnitPowerType("player") == 0 and C.unitframes.player.manatick == "1" and UnitMana("player") < UnitManaMax("player") then
       this.mode = "MANA"
       this:Show()
     elseif UnitPowerType("player") == 3 and C.unitframes.player.energy == "1" then

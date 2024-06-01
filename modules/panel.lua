@@ -196,25 +196,12 @@ pfUI:RegisterModule("panel", "vanilla:tbc", function()
 
     do -- XP & Kills To Level
       local widget = CreateFrame("Frame", "pfPanelWidgetXP", UIParent)
-      local curexp, difexp, maxexp, remexp, oldexp, remstring
+      local difexp, maxexp, remexp, oldexp, remstring
       widget:RegisterEvent("PLAYER_ENTERING_WORLD")
       widget:RegisterEvent("PLAYER_XP_UPDATE")
       widget:RegisterEvent("UPDATE_EXHAUSTION")
       widget:SetScript("OnEvent", function()
         if UnitLevel("player") < _G.MAX_PLAYER_LEVEL then
-          curexp = UnitXP("player")
-          if oldexp ~= nil then
-            difexp = curexp - oldexp
-            maxexp = UnitXPMax("player")
-            if difexp > 0 then
-              remexp = floor((maxexp - curexp)/difexp)
-              remstring = "|cff555555 [" .. remexp .. "]|r"
-            else
-              remstring = nil
-            end
-          end
-          oldexp = curexp
-    
           local a = UnitXP("player")
           local b = UnitXPMax("player")
           local xprested = tonumber(GetXPExhaustion())
@@ -229,10 +216,9 @@ pfUI:RegisterModule("panel", "vanilla:tbc", function()
           else
             expString = expString .. "|cffaaaaff" .. floor((a / b) * 100) .. "%" .. "|r"
           end
-          if remstring == nil then remstring = "" end
-          
+
           -- 输出经验信息到面板
-          pfUI.panel:OutputPanel("exp", expString .. remstring)
+          pfUI.panel:OutputPanel("exp", expString)
         else
           pfUI.panel:OutputPanel("exp", T["Exp"] .. ": " .. NOT_APPLICABLE)
         end
