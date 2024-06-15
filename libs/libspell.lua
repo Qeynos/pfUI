@@ -46,8 +46,8 @@ end
 -- return:      [number],[string]   spell index and spellbook id
 local spellindex = {}
 function libspell.GetSpellIndex(name, rank)
-  local name = string.lower(name)
-  local cache = spellindex[name..(rank or "")]
+  name = string.lower(name)
+  local cache = spellindex[name..(rank and ("("..rank..")") or "")]
   if cache then return cache[1], cache[2] end
 
   if not rank then rank = libspell.GetSpellMaxRank(name) end
@@ -58,7 +58,7 @@ function libspell.GetSpellIndex(name, rank)
     for id = offset + 1, offset + num do
       local spellName, spellRank = GetSpellName(id, bookType)
       if rank and rank == spellRank and name == string.lower(spellName) then
-        spellindex[name..rank] = { id, bookType }
+        spellindex[name.."("..rank..")"] = { id, bookType }
         return id, bookType
       elseif not rank and name == string.lower(spellName) then
         spellindex[name] = { id, bookType }
@@ -67,7 +67,7 @@ function libspell.GetSpellIndex(name, rank)
     end
   end
 
-  spellindex[name..(rank or "")] = { nil }
+  spellindex[name..(rank and ("("..rank..")") or "")] = { nil }
   return nil
 end
 
@@ -117,9 +117,10 @@ function libspell.GetSpellInfo(index, bookType)
 
   if id then
     scanner:SetSpell(id, bookType)
-    local _, sec = scanner:Find(gsub(SPELL_CAST_TIME_SEC, "%%.3g", "%(.+%)"))
-    local _, min = scanner:Find(gsub(SPELL_CAST_TIME_MIN, "%%.3g", "%(.+%)"))
-    local _, range = scanner:Find(gsub(SPELL_RANGE, "%%s", "%(.+%)"))
+    local _, sec = scanner:Find(gsub(SPELL_CAST_TIME_SEC, "%%.3g", "%(.+%)"), false)
+    local _, min = scanner:Find(gsub(SPELL_CAST_TIME_MIN, "%%.3g", "%(.+%)"), false)
+    local _, range = scanner:Find(gsub(SPELL_RANGE, "%%s", "%(.+%)"), false)
+    
     castingTime = (tonumber(sec) or tonumber(min) or 0) * 1000
     if range then
       local _, _, min, max = string.find(range, "(.+)-(.+)")
